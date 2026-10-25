@@ -1,0 +1,53 @@
+# Nav2 parameter overrides for TurtleBot3 Burger in the obstacle course.
+#
+# The launch file loads Nav2's stock nav2_params.yaml (from nav2_bringup) and
+# deep-merges THIS file on top. Only values that differ from the defaults live
+# here, so every line below is a deliberate tuning decision.
+#
+# The stock file targets the larger TurtleBot3 Waffle (radius ~0.22 m). The
+# Burger is ~0.105 m in radius and tops out at 0.22 m/s, so the footprint,
+# inflation and speed limits are adjusted to match.
+
+amcl:
+  ros__parameters:
+    # Localize automatically at the spawn pose, so no manual "2D Pose
+    # Estimate" click is needed. Must match SPAWN_X/SPAWN_Y in demo.launch.py.
+    set_initial_pose: true
+    initial_pose:
+      x: -3.0
+      y: -2.0
+      z: 0.0
+      yaw: 0.0
+
+controller_server:
+  ros__parameters:
+    general_goal_checker:
+      xy_goal_tolerance: 0.15     # default 0.25: stop closer to the goal
+    FollowPath:                   # DWB local planner
+      max_vel_x: 0.22             # Burger hardware limit (default 0.26)
+      max_speed_xy: 0.22
+      xy_goal_tolerance: 0.15
+
+velocity_smoother:
+  ros__parameters:
+    max_velocity: [0.22, 0.0, 1.0]
+    min_velocity: [-0.22, 0.0, -1.0]
+
+local_costmap:
+  local_costmap:
+    ros__parameters:
+      robot_radius: 0.12          # Burger radius 0.105 m + small margin
+      inflation_layer:
+        # 0.55 m (default) closes the 0.9 m gaps around the surprise obstacles.
+        # 0.35 m keeps a safe buffer while leaving those gaps passable.
+        inflation_radius: 0.35
+        cost_scaling_factor: 4.0  # cost falls off faster -> less wall-hugging fear
+
+global_costmap:
+  global_costmap:
+    ros__parameters:
+      robot_radius: 0.12
+      inflation_layer:
+        # Slightly larger than local so global paths stay centred in corridors.
+        inflation_radius: 0.40
+        cost_scaling_factor: 3.0

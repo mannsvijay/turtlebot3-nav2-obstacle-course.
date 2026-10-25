@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!-- Unmapped obstacle: Nav2 must detect it with the lidar, not the map. -->
+<sdf version="1.6">
+  <model name="surprise_box">
+    <static>true</static>
+    <link name="link">
+      <pose>0 0 0.25 0 0 0</pose>
+      <collision name="collision"><geometry><box><size>0.45 0.45 0.5</size></box></geometry></collision>
+      <visual name="visual">
+        <geometry><box><size>0.45 0.45 0.5</size></box></geometry>
+        <material><ambient>0.85 0.1 0.1 1</ambient><diffuse>0.85 0.1 0.1 1</diffuse></material>
+      </visual>
+    </link>
+  </model>
+</sdf>
